@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <meta charset="UTF-8">
+    <title>Video-copy</title>
+    <style>
+         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
+        body{
+    background-color:DarkSeaGreen;
+          }
+
+:root{
+    --main-color:#443;
+    --border-radius:95% 4% 97% 5%/4% 94% 3% 95%;
+    --border-radius-hover:4% 95% 6% 95%/95% 4% 92% 5%;
+    --border:.2rem solid var(--main-color);
+    --border-hover:.2rem dashed var(--main-color);
+}
+
+*{
+    font-family: 'Poppins', sans-serif;
+    margin:0; padding:0;
+    box-sizing: border-box;
+    outline: none; border:none;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: all .2s linear;
+}
+
+html{
+    font-size: 62.5%;
+    overflow-x: hidden;
+    scroll-padding-top: 7rem;
+    scroll-behavior: smooth;
+}
+
+section{
+    padding:2rem;
+}
+
+.heading{
+    font-size: 9rem;
+    text-transform: uppercase;
+    color:transparent;
+    -webkit-text-stroke: .05rem var(--main-color);
+    letter-spacing: .2rem;
+    text-align: center;
+    pointer-events: none;
+    position: relative;
+}
+
+.heading span{
+    position: absolute;
+    top:50%; left:50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    color:var(--main-color);
+    font-size: 3rem;
+}
+.btn{
+    display: inline-block;
+    padding:.9rem 1.5rem;
+    border-radius: var(--border-radius);
+    color:var(--main-color);
+    background: none;
+    border:var(--border);
+    cursor: pointer;
+    margin-top: 1rem;
+    font-size: 1.7rem;
+}
+
+.btn:hover{
+    border-radius: var(--border-radius-hover);
+    border:var(--border-hover);
+}
+
+
+.header{
+    position: fixed;
+    top:0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    background:black;
+    color:white;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
+    padding:2rem 9%;
+}
+
+.header .logo{
+   color:white;
+    font-size: 2.3rem;
+
+}
+
+.header .logo i{
+    padding-left: 50px;
+
+}
+.header .btn{
+    margin-top: 0;
+    color:white;
+}
+section{
+
+display: flex; flex-direction:row;
+margin-bottom:3%;
+}
+
+        .col-sm{
+
+          background-color:black;
+          width: 700px;
+          height: 480px;
+          border-radius: 35px;
+          object-fit: contain;
+          margin-top:10%;
+          margin-left:10%;
+        }
+
+         .col-sm img{
+          color:blue;
+          width: 635px;
+          height: 450px;
+          border-radius: 35px;
+           margin-left:5%;
+
+
+         }
+  .new{
+        color:black;
+        margin:0px;
+        padding:10px;
+
+        margin-top:15%;
+        margin-left:2%;
+               }
+
+
+footer{
+        background-color:black;
+        text-align:center;
+        margin:0px;
+        padding:5px;
+        color:white;
+        font-size:20px;
+         margin-top:-10px;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <a href="#" class="logo">SR UNIVERSITY<img src="../static/images/logo2.png" height="50px" width="50px" align="left"></a>
+    <a href="/home" class="btn">home</a>
+</header>
+<section>
+<div class="col-sm" id="col-sm">
+          <img  src="{{ url_for('video') }}"   alt="Upload video" >
+</div>
+
+
+    <div class="new" >
+      <form method = 'POST' enctype="multipart/form-data" style=" text-align: center;">
+        {{form.hidden_tag()}}
+        {{form.file(class_="custom-file-input")}}
+          <div>
+        <button type="submit" name="favorite" value="x" class="btnCustom"style="margin-top:20%; padding:7px;">
+            Submit
+        </button>
+              </div>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+    <p>Capstone Project  | <a href="https://sru.edu.in/" title="UNIVERSITY">SR UNIVERSITY</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <title>Object Detection</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <!-- <link rel="stylesheet" href="style.css" />-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
+   <!-- <link rel="stylesheet" type="text/javascript" href="script.js">-->
+    <meta charset="UTF-8">
+    <script>
+        const initSlider = () => {
+    const imageList = document.querySelector(".review .container .slider-wrapper .image-list");
+    const slideButtons = document.querySelectorAll(".review .container .slider-wrapper .slide-button");
+    const sliderScrollbar = document.querySelector(".review .container .slider-scrollbar");
+    const scrollbarThumb = sliderScrollbar.querySelector(".review .container .slider-scrollbar .scrollbar-track .scrollbar-thumb");
+    const maxScrollLeft = imageList.scrollWidth - imageList.clientWidth;
+
+    // Handle scrollbar thumb drag
+    scrollbarThumb.addEventListener("mousedown", (e) => {
+        const startX = e.clientX;
+        const thumbPosition = scrollbarThumb.offsetLeft;
+        const maxThumbPosition = sliderScrollbar.getBoundingClientRect().width - scrollbarThumb.offsetWidth;
+
+        // Update thumb position on mouse move
+        const handleMouseMove = (e) => {
+            const deltaX = e.clientX - startX;
+            const newThumbPosition = thumbPosition + deltaX;
+
+            // Ensure the scrollbar thumb stays within bounds
+            const boundedPosition = Math.max(0, Math.min(maxThumbPosition, newThumbPosition));
+            const scrollPosition = (boundedPosition / maxThumbPosition) * maxScrollLeft;
+
+            scrollbarThumb.style.left = `${boundedPosition}px`;
+            imageList.scrollLeft = scrollPosition;
+        }
+
+        // Remove event listeners on mouse up
+        const handleMouseUp = () => {
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
+        }
+
+        // Add event listeners for drag interaction
+        document.addEventListener("mousemove", handleMouseMove);
+        document.addEventListener("mouseup", handleMouseUp);
+    });
+
+    // Slide images according to the slide button clicks
+    slideButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const direction = button.id === "prev-slide" ? -1 : 1;
+            const scrollAmount = imageList.clientWidth * direction;
+            imageList.scrollBy({ left: scrollAmount, behavior: "smooth" });
+        });
+    });
+
+     // Show or hide slide buttons based on scroll position
+    const handleSlideButtons = () => {
+        slideButtons[0].style.display = imageList.scrollLeft <= 0 ? "none" : "flex";
+        slideButtons[1].style.display = imageList.scrollLeft >= maxScrollLeft ? "none" : "flex";
+    }
+
+    // Update scrollbar thumb position based on image scroll
+    const updateScrollThumbPosition = () => {
+        const scrollPosition = imageList.scrollLeft;
+        const thumbPosition = (scrollPosition / maxScrollLeft) * (sliderScrollbar.clientWidth - scrollbarThumb.offsetWidth);
+        scrollbarThumb.style.left = `${thumbPosition}px`;
+    }
+
+    // Call these two functions when image list scrolls
+    imageList.addEventListener("scroll", () => {
+        updateScrollThumbPosition();
+        handleSlideButtons();
+    });
+}
+
+window.addEventListener("resize", initSlider);
+window.addEventListener("load", initSlider);
+    </script>
+     <style>
+         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
+        body{
+    background-color:DarkSeaGreen;
+          }
+
+:root{
+    --main-color:#443;
+    --border-radius:95% 4% 97% 5%/4% 94% 3% 95%;
+    --border-radius-hover:4% 95% 6% 95%/95% 4% 92% 5%;
+    --border:.2rem solid var(--main-color);
+    --border-hover:.2rem dashed var(--main-color);
+}
+
+*{
+    font-family: 'Poppins', sans-serif;
+    margin:0; padding:0;
+    box-sizing: border-box;
+    outline: none; border:none;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: all .2s linear;
+}
+
+html{
+    font-size: 62.5%;
+    overflow-x: hidden;
+    scroll-padding-top: 7rem;
+    scroll-behavior: smooth;
+}
+
+section{
+    padding:2rem 9%;
+}
+
+.heading{
+    font-size: 9rem;
+    text-transform: uppercase;
+    color:transparent;
+    -webkit-text-stroke: .05rem var(--main-color);
+    letter-spacing: .2rem;
+    text-align: center;
+    pointer-events: none;
+    position: relative;
+}
+
+.heading span{
+    position: absolute;
+    top:50%; left:50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    color:var(--main-color);
+    font-size: 3rem;
+}
+.btn{
+    display: inline-block;
+    padding:.9rem 1.5rem;
+    border-radius: var(--border-radius);
+    color:var(--main-color);
+    background: none;
+    border:var(--border);
+    cursor: pointer;
+    margin-top: 1rem;
+    font-size: 1.7rem;
+}
+
+.btn:hover{
+    border-radius: var(--border-radius-hover);
+    border:var(--border-hover);
+}
+
+
+.header{
+    position: fixed;
+    top:0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    background:black;
+    color:white;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
+    padding:2rem 9%;
+}
+
+.header .logo{
+   color:white;
+    font-size: 2.3rem;
+
+}
+
+.header .logo i{
+    padding-left: 50px;
+
+}
+
+.header .navbar a{
+    margin:0 1rem;
+    font-size: 1.7rem;
+    color:white;
+}
+.header .navbar a:hover{
+    color:yellowgreen;
+}
+.header .btn{
+    margin-top: 0;
+    color:white;
+}
+
+
+
+.home{
+    min-height: 100vh;
+    padding-top: 20rem;
+
+}
+
+.home .row{
+
+    display: flex;
+    align-items:center;
+    flex-wrap: wrap;
+    gap:1.5rem;
+
+}
+
+.home .row .box{
+     flex:1 1 42rem;
+     text-align:center;
+     transform-style:preserve-3d;
+     animation:animate 25s linear infinite;
+     }
+.home .row .content{
+    flex:1 1 42rem;
+}
+
+@keyframes animate{
+0%{
+      transform:perspective(1000px) rotateX(0deg) rotate(25deg);
+}
+100%{
+      transform:perspective(1000px) rotateX(360deg) rotate(25deg);
+}
+
+}
+.home .row .box span{
+    position:absolute;
+    color:#F5FFFA;
+    font-size:5.0em;
+    white-space:nowrap;
+    text-transform:uppercase;
+    font-weight:900;
+padding:0 10px;
+background:linear-gradient(90deg,transparent,rgba(143,188,143,0.25),transparent);
+line-height:0.5em
+transform-style:preserve-3d;
+text-shadow:0 5px 15px rgba(0.0.0.0.25);
+transform:translate(-50%,-50%) rotateX(calc(var(--i) * 22.5deg)) translateZ(106px);
+
+}
+.home .row .box span i:nth-child(1){
+font-style:initial;
+color:#ff246f;
+}
+.home .row .box span i:nth-child(2){
+font-style:initial;
+color:#8B008B;
+
+}
+.home .row .box span i:nth-child(3){
+font-style:initial;
+color:#ADFF2F;
+
+}
+
+.home .row .content h3{
+    font-size: 6.5rem;
+    color:var(--main-color);
+    text-transform: uppercase;
+}
+.home .row .content h4{
+    font-size: 3.5rem;
+    color:DarkSlateGrey;
+    text-transform: uppercase;
+}
+.home .row .content .btn{
+    padding-right:80px;
+    background-color:papayaWhip;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.home .row .content .btn:hover {
+      background-color:#00FFFF;
+      transition: 0.7s;
+  }
+
+
+.about .row{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap:1.5rem;
+}
+
+.about .row .image{
+    flex:1 1 42rem;
+}
+
+.about .row .image img{
+    width: 100%;
+    animation:aboutImage 4s linear infinite;
+}
+
+@keyframes aboutImage {
+    0%, 100%{
+        transform: scale(.9);
+        border-radius: var(--border-radius-hover);
+    }
+    50%{
+        transform: scale(.8);
+        border-radius: var(--border-radius);
+    }
+}
+
+.about .row .content{
+    flex:1 1 42rem;
+}
+
+.about .row .content .title{
+    color:var(--main-color);
+    font-size: 3rem;
+    line-height: 1.8;
+}
+
+.about .row .content p{
+    color:var(--main-color);
+    font-size: 1.5rem;
+    line-height: 1.8;
+    padding:1rem 0;
+}
+
+.about .row .content .icons-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap:1rem;
+    padding-top: 3rem;
+}
+
+.about .row .content .icons-container .icons{
+    flex:1 1 15rem;
+    padding:1.5rem;
+    text-align: center;
+    border:var(--border);
+    border-radius: var(--border-radius);
+}
+
+.about .row .content .icons-container .icons img{
+    height: 5rem;
+}
+
+.about .row .content .icons-container .icons h3{
+    font-size: 1.7rem;
+    padding-top: 1rem;
+    color:var(--main-color);
+}
+
+.review .container {
+  max-width: 1200px;
+  width: 95%;
+}
+
+.review .container .slider-wrapper {
+  position: relative;
+}
+
+.review .container .slider-wrapper .slide-button {
+  position: absolute;
+  top: 50%;
+  outline: none;
+  border: none;
+  height: 50px;
+  width: 50px;
+  z-index: 5;
+  color: #fff;
+  display: flex;
+  cursor: pointer;
+  font-size: 2.2rem;
+  background: #000;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.review .container  .slider-wrapper .slide-button:hover {
+  background: #404040;
+}
+
+.review .container .slider-wrapper .slide-button#prev-slide {
+  left: -25px;
+  display: none;
+}
+
+.review .container .slider-wrapper .slide-button#next-slide {
+  right: -25px;
+}
+
+.review .container .slider-wrapper .image-list {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 18px;
+  font-size: 0;
+  list-style: none;
+  margin-bottom: 30px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.review .container .slider-wrapper .image-list::-webkit-scrollbar {
+  display: none;
+}
+
+.review .container .slider-wrapper .image-list .image-item {
+  width: 325px;
+  height: 400px;
+  object-fit: cover;
+}
+
+.review .container .slider-scrollbar {
+  height: 24px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.review .container .slider-scrollbar .scrollbar-track {
+  background: #ccc;
+  width: 100%;
+  height: 2px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  position: relative;
+}
+
+.review .container .slider-scrollbar:hover .scrollbar-track {
+  height: 4px;
+}
+
+.review .container .slider-scrollbar .scrollbar-track .scrollbar-thumb {
+  position: absolute;
+  background: #000;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  height: 100%;
+  cursor: grab;
+  border-radius: inherit;
+}
+
+.review .container .slider-scrollbar .scrollbar-track .scrollbar-thumb:active {
+  cursor: grabbing;
+  height: 8px;
+  top: -2px;
+}
+
+.review .container .slider-scrollbar .scrollbar-track .scrollbar-thumb::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -10px;
+  bottom: -10px;
+}
+
+/* Styles for mobile and tablets */
+@media only screen and (max-width: 1023px) {
+  .review .container .slider-wrapper .slide-button {
+    display: none !important;
+  }
+
+  .review .container .slider-wrapper .image-list {
+    gap: 10px;
+    margin-bottom: 15px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .review .container  .slider-wrapper .image-list .image-item {
+    width: 280px;
+    height: 380px;
+  }
+
+.review .container .slider-scrollbar .scrollbar-track .scrollbar-thumb {
+    width: 20%;
+  }
+}
+
+
+         .book{
+    background:url(../image/book-bg.jpg) no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.book form{
+    margin:0 auto 2rem auto;
+    max-width: 60rem;
+    border-radius: var(--border-radius-hover);
+    padding:3rem;
+    border:var(--border);
+}
+
+.book form .box{
+    width:100%;
+    padding:1rem 1.2rem;
+    border-radius: .5rem;
+    font-size: 1.6rem;
+    background:none;
+    text-transform: none;
+    color:var(--main-color);
+    border:var(--border);
+    margin:.7rem 0;
+}
+
+.book form .box:focus{
+    border:var(--border-hover);
+}
+
+.book form textarea{
+    height:15rem;
+    resize: none;
+}
+
+footer{
+        background-color:black;
+        text-align:center;
+        margin:0px;
+        padding:0px;
+        color:white;
+        font-size:20px;
+        }
+
+     </style>
+
+
+</head>
+<body>
+
+<header class="header">
+    <a href="#" class="logo">SR UNIVERSITY<img src="../static/images/logo2.png" height="50px" width="50px" align="left"></a>
+    <nav class="navbar">
+        <a href="/home">home</a>
+        <a href="#about">About</a>
+        <a href="#review">Sample Results</a>
+         <a href="https://findmasterr.wordpress.com/2023/11/18/find-masterr/">Blog</a>
+    </nav>
+    <a href="#book" class="btn">Contact</a>
+</header>
+
+<!-- home section starts  -->
+
+<section class="home" id="home">
+
+    <div class="row">
+
+        <div class="content">
+            <h3>FINDMASTER</h3>
+            <h4>Revolutionalizing Visual Perception with cutting edge Technology </h4>
+            <a href="/FrontPage" class="btn">Video/photo</a>
+            <a href="/webcam" class="btn">WebCam</a>
+            <a href="/custom" class="btn">EEP Detection</a>
+            <a href="/webcam_ppelive" class="btn">EEP WebCam</a>
+        </div>
+
+        <div class="box">
+           <!-- <img src="home-img-2.png" class="main-home-image" alt="">-->
+             <span style="--i:1;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:2;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:3;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:4;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:5;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:6;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:7;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:8;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:9;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:10;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:11;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:12;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:13;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:14;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:15;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+             <span style="--i:16;"><i>YOLO</i>V<i>8</i>ALGORITH<i>M</i></span>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- home section ends -->
+
+<!-- about section starts  -->
+
+<section class="about" id="about">
+
+    <h1 class="heading"> about Algorithm <span>why choose YoloV8</span> </h1>
+
+    <div class="row">
+
+        <div class="image">
+            <img src="../static/images/about1.jfif" alt="">
+        </div>
+
+        <div class="content">
+            <h3 class="title">what's make YOLO special!</h3>
+            <p>Ultralytics YOLOv8 is a powerful real-time object detection and image segmentation model that utilizes the latest advancements in deep learning and computer vision technology. With its exceptional speed and accuracy, YOLOv8 offers unmatched performance.</p>
+            <a href="https://docs.ultralytics.com/" class="btn">read more</a>
+            <div class="icons-container">
+                <div class="icons">
+                    <h3>Friendly API CLI+Python</h3>
+                </div>
+                <div class="icons">
+                    <h3>Anchor free detection</h3>
+                </div>
+                <div class="icons">
+                    <h3>Accuracy</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- about section ends -->
+
+<!-- review section starts  -->
+
+<section class="review" id="review">
+
+    <h1 class="heading"> Reviews <span>Sample Results</span> </h1>
+    <div class="container">
+      <div class="slider-wrapper">
+        <button id="prev-slide" class="slide-button material-symbols-rounded">
+          chevron_left
+        </button>
+        <ul class="image-list">
+          <img class="image-item" src="../static/images/101.png" alt="img-1" />
+          <img class="image-item" src="../static/images/102.png" alt="img-2" />
+          <img class="image-item" src="../static/images/103.png" alt="img-3" />
+          <img class="image-item" src="../static/images/104.png" alt="img-4" />
+          <img class="image-item" src="../static/images/105.png" alt="img-5" />
+          <img class="image-item" src="../static/images/106.png" alt="img-6" />
+          <img class="image-item" src="../static/images/107.png" alt="img-7" />
+          <img class="image-item" src="../static/images/108.png" alt="img-8" />
+          <img class="image-item" src="../static/images/9.jfif" alt="img-9" />
+          <img class="image-item" src="../static/images/6.png" alt="img-10" />
+        </ul>
+        <button id="next-slide" class="slide-button material-symbols-rounded">
+          chevron_right
+        </button>
+      </div>
+      <div class="slider-scrollbar">
+        <div class="scrollbar-track">
+          <div class="scrollbar-thumb"></div>
+        </div>
+      </div>
+    </div>
+
+
+</section>
+
+<!-- review section ends -->
+
+<!-- contact section starts  -->
+
+<section class="book" id="book">
+
+    <h1 class="heading"> Contact Us <span>queries</span> </h1>
+
+    <form action="">
+
+
+
+        <input type="text" placeholder="your name" class="box">
+        <input type="email" placeholder="your email" class="box">
+        <input type="number" placeholder="your number" class="box">
+        <textarea name="" placeholder="your message" class="box" id="" cols="30" rows="10"></textarea>
+
+        <input type="submit" value="send message" class="btn">
+
+    </form>
+
+</section>
+
+<!-- contact section ends -->
+
+<footer>
+    <p>Capstone Project  | <a href="https://sru.edu.in/" title="UNIVERSITY">SR UNIVERSITY</a></p>
+</footer>
+
+</body>
+</html>
